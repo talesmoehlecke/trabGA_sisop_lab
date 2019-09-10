@@ -35,6 +35,7 @@ void start_browser(char *url[]){
 
 
 
+
 int main(int argc, char *argv[]){
 		printf("<<<< Applications Menu >>>\n1) Web Browser \t (executando, pid=1234) \n2) Text Editor \t(executando, pid=3456)\n3)Termina\t(falhou)\n4) Finalizar processo \t(concluído)\n5) Quit\n Opção: ");
 		bool whileTaRolando = true;
