@@ -37,7 +37,13 @@ void start_browser(char *url[]){
 
 
 int main(int argc, char *argv[]){
-		printf("<<<< Applications Menu >>>\n1) Web Browser \t (executando, pid=1234) \n2) Text Editor \t(executando, pid=3456)\n3)Termina\t(falhou)\n4) Finalizar processo \t(concluído)\n5) Quit\n Opção: ");
+		printf("<<<< Applications Menu >>>\n"
+		       "\t1) Web Browser \t\t(executando, pid=1234)\n"
+		       "\t2) Text Editor \t\t(executando, pid=3456)\n"
+		       "\t3) Terminal \t(falhou)\n"
+		       "\t4) Finalizar processo \t(concluído)\n"
+		       "\t5) Quit\n"
+		"Opção: ");
 		bool whileTaRolando = true;
 		int entradaDoUsuario;
 		//pid_t p = fork();
