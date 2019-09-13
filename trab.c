@@ -35,23 +35,30 @@ void start_browser(char *url[]){
 
 void openGedit(){
 	printf("Abre editor de texto");
+	fflush(stdout); //força a saida de todas as saidas na fila do buffer
 	pid_t p = fork();
 	if (p < 0) {                                            
 		fprintf(stderr, "Falha na criação do novo processo! \n");
 		exit(13);                                       
-	}else if (p == 0) {                                    
-		printf("Filho iniciando... \n"); 
+	}else if (p == 0) {      
+		printf("Filho iniciando...  pid =  %d", (int)getpid()); 
+		fflush(stdout);      //força as saida de todas as saidas no buffer pq o exec limpa o buffer e impede o print                        		
 		execlp("gedit", "gedit", NULL);
-		pid2 = getpid();	                
+		//pid2 = getpid();              
+		//dar um kill no pid impresso encerra o gedit
 		printf("Filho com parada de execução forçada! \n"); 
 		exit(14);
-	}	
+	} else
+	{
+		//executa no pai
+	}
+	
 }
 
 int main(int argc, char *argv[]){
 		printf("<<<< Applications Menu >>>\n"
-			"\t1) Web Browser \t\t(executando, pid=1234)\n"
-			"\t2) Text Editor \t\t(executando, pid=%d",pid2)\n"
+			"\t1) Web Browsers \t\t(executando, pid=1234)\n"
+			"\t2) Text Editor \t\t(executando, pid=,/*pid2*/)\n"
 			"\t3) Terminal \t\t(falhou)\n"
 			"\t4) Finalizar processo \t(concluído)\n"
 			"\t5) Quit\n"
