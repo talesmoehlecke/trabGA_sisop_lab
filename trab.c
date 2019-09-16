@@ -4,92 +4,105 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <stdbool.h>
-/*
+
 int contador;
 
-void load_firefox(char *url[]){
+int openFirefox(char *url)
+{
 	//int status;
-        pid_t p = fork();                                       
-        if (p < 0) {                                            
-                fprintf(stderr, "Falha na criação do novo processo! \n");
-                exit(13);                                       
-        } else if (p == 0) {                                    
-                printf("Filho iniciando %s... \n", url[contador]); 
-                execlp("firefox","firefox --new-window", url[contador], NULL);                  
-                printf("Filho com parada de execução forçada! \n"); 
-                exit(14);
-        } else {       
-                printf("Pai esperando... \n"); 
-		//wait(&status);
-		sleep(5);
-		if(--contador>0) load_firefox(url);
-                printf("Pai finalizando... \n"); 
-                exit(0);
-        }
+	pid_t p = fork();
+	if (p < 0)
+	{
+		fprintf(stderr, "Falha na criação do novo processo! \n");
+		exit(13);
+	}
+	else if (p == 0)
+	{
+		printf("Filho iniciando %s... \n", url);
+		execlp("firefox", "firefox --new-window", url, NULL);
+		printf("Filho com parada de execução forçada! \n");
+		exit(14);
+	}
+	else
+	{
+		return p;
+	}
 }
 
-void start_browser(char *url[]){
-        load_firefox(url);
-}
- */
-
-void openGedit(){
+int openGedit()
+{
 	printf("Abre editor de texto");
 	fflush(stdout); //força a saida de todas as saidas na fila do buffer
 	pid_t p = fork();
-	if (p < 0) {                                            
-		fprintf(stderr, "Falha na criação do novo processo! \n");
-		exit(13);                                       
-	}else if (p == 0) {      
-		printf("Filho iniciando...  pid =  %d", (int)getpid()); 
-		fflush(stdout);      //força as saida de todas as saidas no buffer pq o exec limpa o buffer e impede o print                        		
-		execlp("gedit", "gedit", NULL);
-		//pid2 = getpid();              
-		//dar um kill no pid impresso encerra o gedit
-		printf("Filho com parada de execução forçada! \n"); 
-		exit(14);
-	} else
+	if (p < 0)
 	{
-		//executa no pai
+		fprintf(stderr, "Falha na criação do novo processo! \n");
+		exit(13);
 	}
-	
+	else if (p == 0)
+	{
+		printf("Filho iniciando...  pid =  %d", (int)getpid());
+		fflush(stdout); //força as saida de todas as saidas no buffer pq o exec limpa o buffer e impede o print
+		execlp("gedit", "gedit", NULL);
+		//pid2 = getpid();
+		//dar um kill no pid impresso encerra o gedit
+		printf("Filho com parada de execução forçada! \n");
+		exit(14);
+	}
+	else
+	{
+		return p; //executa no pai
+	}
 }
 
-int main(int argc, char *argv[]){
-		printf("<<<< Applications Menu >>>\n"
-			"\t1) Web Browsers \t\t(executando, pid=1234)\n"
-			"\t2) Text Editor \t\t(executando, pid=,/*pid2*/)\n"
-			"\t3) Terminal \t\t(falhou)\n"
-			"\t4) Finalizar processo \t(concluído)\n"
-			"\t5) Quit\n"
-		"Opção: ");
-		bool whileTaRolando = true;
-		int entradaDoUsuario;
-		
-		while (whileTaRolando){
-			scanf("%d", &entradaDoUsuario);
-			printf("%d", entradaDoUsuario);
-			printf("\n");
-			
-			switch(entradaDoUsuario){
-			case(1) :
-				printf("Abre Firefox");
-				break;
-			case(2) :
-				openGedit();
-				break;
-			case(3) :
-				printf("Abre terminal");
-				break; 	
-			case(4) :
-				printf("Finalizar processo");
-				break; 	
-			default :
-				whileTaRolando = false;
-				break; 	
-			}
+int main(int argc, char *argv[])
+{
+	char bufferDeLeituras[20];
+	char bufferDeURLLeitura[150];
+	printf("<<<< Applications Menu >>>\n"
+		   "\t1) Web Browsers \t\t(executando, pid=1234)\n"
+		   "\t2) Text Editor \t\t(executando, pid=,/*pid2*/)\n"
+		   "\t3) Terminal \t\t(falhou)\n"
+		   "\t4) Finalizar processo \t(concluído)\n"
+		   "\t5) Quit\n"
+		   "Opção: ");
+	bool whileTaRolando = true;
+	int entradaDoUsuario;
+	int pidGedit;
+	int pidFirefox;
+	char *url;
+	while (whileTaRolando)
+	{
+		fgets(bufferDeLeituras, 20, stdin);
+		sscanf(bufferDeLeituras, "%d", &entradaDoUsuario);
+
+		printf("%d", entradaDoUsuario);
+		printf("\n");
+
+		switch (entradaDoUsuario)
+		{
+		case (1):
+			printf("Insira uma URL:");
+			fgets(bufferDeLeituras, 150, stdin);
+			sscanf(bufferDeLeituras, "%s", &*url);
+			pidFirefox = openFirefox(url);
+			printf("PId do firefox: %d", pidFirefox);
+			break;
+		case (2):
+			pidGedit = openGedit();
+			printf("pid do filho é %d", pidGedit);
+			break;
+		case (3):
+			printf("Abre terminal");
+			break;
+		case (4):
+			printf("Finalizar processo");
+			break;
+		default:
+			whileTaRolando = false;
+			break;
 		}
-	
-return 0;
-}
+	}
 
+	return 0;
+}
